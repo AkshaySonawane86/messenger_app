@@ -1,0 +1,56 @@
+/* src/Dashboard/ProfileSettings.css */
+
+.profile-settings {
+  padding: 24px;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8fafc, #f5f7fb);
+}
+
+.settings-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.avatar-preview {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2563eb;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  margin-bottom: 10px;
+  background: white;
+}
+
+.upload-btn {
+  display: inline-block;
+  background: #2563eb;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.25s ease, transform 0.15s ease;
+  font-size: 0.95rem;
+}
+
+.upload-btn:hover {
+  background: #1e4fc4;
+  transform: translateY(-1px);
+}
+
+.upload-btn:active {
+  transform: scale(0.97);
+}

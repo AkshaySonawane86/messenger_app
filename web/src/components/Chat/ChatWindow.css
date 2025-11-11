@@ -1,0 +1,21 @@
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-header {
+  background: #ededed;
+  padding: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #e5ddd5;
+  display: flex;
+  flex-direction: column;
+}

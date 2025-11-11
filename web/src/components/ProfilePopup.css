@@ -1,0 +1,110 @@
+/* // src/components/ProfilePopup.css */
+
+.profile-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  animation: fadeIn 0.2s ease;
+}
+
+.profile-popup-card {
+  background: #fff;
+  border-radius: 14px;
+  width: 320px;
+  max-width: 90%;
+  padding: 20px 18px 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: slideUp 0.25s ease;
+  text-align: center;
+}
+
+.popup-avatar img {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.popup-info h3 {
+  font-size: 1.2rem;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.popup-email {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.popup-status {
+  font-size: 0.9rem;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.popup-close:hover {
+  color: #111;
+}
+
+/* ✅ new styles for edit button */
+.popup-actions {
+  margin-top: 10px;
+}
+
+.popup-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.popup-btn:hover {
+  background: #1e4fc4;
+  transform: translateY(-1px);
+}
+
+/* animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
