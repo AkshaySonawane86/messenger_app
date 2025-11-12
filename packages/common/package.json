@@ -1,0 +1,5 @@
+{
+  "name": "@messenger/common",
+  "version": "0.0.1",
+  "main": "src/index.js"
+}

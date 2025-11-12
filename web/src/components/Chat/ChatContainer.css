@@ -1,0 +1,19 @@
+.chat-container {
+  display: flex;
+  height: 100vh;
+  background: #f7f9fb;
+  overflow: hidden;
+}
+
+.chat-list-section {
+  width: 30%;
+  border-right: 1px solid #ddd;
+  background: #fff;
+}
+
+.chat-window-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #e5ddd5;
+}
