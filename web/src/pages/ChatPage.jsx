@@ -281,9 +281,36 @@ export default function ChatPage() {
     }, 2000);
   };
 
+
+  // Akshay
+  // console.log('This is reciverIdentifier',receiverIdentifier);
+  // console.log('THis is user id',contacts[0]);
+  
+  // console.log('THis ',contacts);
+  // console.log('selectchart',{selectedChat});
+
+  const [selectedChat,setSelectedChat]=useState([]);
+  // console.log(selectedChat);
+
+  // async function ensureChatExist(id) {
+  //   if (!user?._id || !receiverIdentifier) return;
+  //   const res = await api.post("/api/chats/create", { userA: user._id, userB: id });
+  //   if (res.data?.chat?._id) {
+  //     const cid = res.data.chat._id;
+  //     setChatId(cid);
+  //     localStorage.setItem("lastChatId", cid);
+  //     localStorage.setItem("lastReceiverId", receiverIdentifier);
+  //     getSocket()?.emit("chat:join", { chatId: cid });
+  //     return cid;
+  //   }
+  // }
+
+  
+
   return (
-    <div className="chat-page">
-      <header className="chat-header">
+    <>
+    <div className="chat-page" style={{display: "none"}}>
+      <header className="chat-header" style={{border: '10px solid #000'}}>
         <div className="chat-contact">
           {selectedContact ? (
             <>
@@ -391,5 +418,231 @@ export default function ChatPage() {
         <ProfilePopup contact={selectedContact} onClose={() => setShowProfilePopup(false)} />
       )}
     </div>
+
+    {/* Rahul code */}
+<div
+      className="chat-container"
+      style={{
+        display: "flex",
+        height: "100vh",
+        backgroundColor: "#f4fdfa",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+{/* Sidebar */}
+      <div
+        className="sidebar"
+        style={{
+          width: "30%",
+          backgroundColor: "#fff",
+          borderRight: "1px solid #e0e0e0",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+
+        <div
+          style={{
+            padding: "15px",
+            borderBottom: "1px solid #e0e0e0",
+            fontWeight: "bold",
+            fontSize: "20px",
+            color: "#2ac48a",
+          }}
+        >
+          QuickChat
+        </div>
+        
+
+        <div style={{ flex: 1, overflowY: "auto" }}>
+            {contacts.map((chat) => (
+          <div
+              key={chat}
+              onClick={() => {
+                      setSelectedChat(chat);
+                      setReceiverIdentifier(chat._id);
+                      // console.log("This is selectChart",selectedChat);
+                      // console.log("after the click the reciverId",receiverIdentifier);
+                      // ensureChatExist('selectedChat')
+                      ensureChatExists();
+                   }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "12px 16px",
+                cursor: "pointer",
+                backgroundColor: receiverIdentifier === chat._id ? "#e6f9f0" : "transparent",
+                transition: "0.2s",
+              }}
+            >
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  backgroundColor: "#baf3db",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                  color: "#fff",
+                }}
+              >
+                {chat[0]}
+              </div>
+               <div style={{ fontSize: "16px", color: "#222" }}>{chat.name || chat.email}</div>
+
+            </div>
+            ))}
+        </div>
+        </div>
+
+        {/* Chat Area */}
+      <div
+        className="chat-area"
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          border: '2px solid #000'
+        }}
+      >
+    
+       {receiverIdentifier ? (
+      <>
+       {/* Chat Header */}
+            <div
+              style={{
+                padding: "15px 20px",
+                borderBottom: "1px solid #e0e0e0",
+                backgroundColor: "#fff",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  backgroundColor: "#baf3db",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                  color: "#fff",
+                  // border: '2px solid #000'
+                }}
+              >
+              {/* {contacts._id === receiverIdentifier} */}
+              
+                {/* {receiverIdentifier[0]} */}
+                {/* {selectedChat[0]} */}
+              </div>
+              <h2 style={{ margin: 0, fontSize: "18px", color: "#2ac48a" }}>
+                {/* {selectedChat} */}
+                {/* {receiverIdentifier} */}
+                {/* {contacts.map(user => user._id === receiverIdentifier) ? contacts.email : 'No name'} */}
+                {selectedChat.email}
+              </h2>
+            </div>
+
+
+            {/* Messages */}
+            <div
+              style={{
+                flex: 1,
+                padding: "15px",
+                overflowY: "auto",
+                backgroundColor: "#f4fdfa",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+
+              {/* {messages.map((m) => (
+            <MessageItem key={m._id} m={m} currentUserId={user._id} />
+          ))} */}
+
+          
+          {messages.map((m) => (
+            <MessageItem key={m._id} m={m} currentUserId={user._id} />
+          ))}
+        
+
+       </div>
+
+          {chatId && (
+        <footer className="chat-footer">
+          {isTyping && <div className="typing-indicator-footer">💬 {selectedContact?.name} is typing...</div>}
+
+          {/* ✅ Preview Section */}
+          {(filePreview || locationPreview) && (
+            <div className="preview-container">
+              {filePreview && file?.type.startsWith("image") ? (
+                <img src={filePreview} alt="preview" className="preview-image" />
+              ) : filePreview ? (
+                <div className="preview-file">{filePreview}</div>
+              ) : (
+                <div className="preview-file">📍 Location Ready to Send</div>
+              )}
+              <button className="remove-preview" onClick={() => { setFile(null); setFilePreview(null); setLocationPreview(null); }}>✕</button>
+            </div>
+          )}
+
+          <form onSubmit={sendMessage} className="send-form">
+            <button type="button" className="emoji-btn" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+              😀
+            </button>
+            {showEmojiPicker && (
+              <div className="emoji-picker-container" ref={pickerRef}>
+                <EmojiPicker onEmojiClick={(e) => setInput((prev) => prev + e.emoji)} autoFocusSearch={false} />
+              </div>
+            )}
+            <input placeholder="Type a message..." value={input} onChange={handleTyping} />
+            <div className="attach-wrapper">
+              <button type="button" className="file-upload-btn" onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}>
+                📎
+              </button>
+              {showAttachmentMenu && (
+                <div className="attachment-menu">
+                  <label>📷<input type="file" accept="image/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
+                  <label>🎥<input type="file" accept="video/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
+                  <label>🎵<input type="file" accept="audio/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
+                  <label>📄<input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.txt" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
+                  <label onClick={handleShareLocation}>📍 Send Location</label>
+                  <label onClick={handleLiveShare}>🌐 {liveSharing ? "Stop Live" : "Live Location"}</label>
+                </div>
+              )}
+            </div>
+            <button type="submit" disabled={!socketInitialized}>➤</button>
+          </form>
+        </footer>
+      )}
+
+            
+      </>
+        ) : (
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#999",
+            }}
+          >
+            Select a chat to start messaging
+          </div>
+        )}
+
+        
+
+      </div>
+    </div>
+
+    </>
   );
 }
