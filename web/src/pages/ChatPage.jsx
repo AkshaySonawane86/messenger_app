@@ -489,7 +489,14 @@ export default function ChatPage() {
                   color: "#fff",
                 }}
               >
-                {chat[0]}
+                {/* {chat.avatarUrl} */}
+                <img
+                src={
+                  chat.avatarUrl ||
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(chat.name || chat.email)}&background=baf3db&color=fff`
+                }
+                className="chat-avatar"
+              />
               </div>
                <div style={{ fontSize: "16px", color: "#222" }}>{chat.name || chat.email}</div>
 
@@ -540,12 +547,19 @@ export default function ChatPage() {
               
                 {/* {receiverIdentifier[0]} */}
                 {/* {selectedChat[0]} */}
+                <img
+                src={
+                  selectedChat.avatarUrl ||
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedChat.name || selectedChat.email)}&background=baf3db&color=fff`
+                }
+                className="chat-avatar"
+              />
               </div>
               <h2 style={{ margin: 0, fontSize: "18px", color: "#2ac48a" }}>
                 {/* {selectedChat} */}
                 {/* {receiverIdentifier} */}
                 {/* {contacts.map(user => user._id === receiverIdentifier) ? contacts.email : 'No name'} */}
-                {selectedChat.email}
+                {selectedChat.name || selectedChat.email}
               </h2>
             </div>
 
