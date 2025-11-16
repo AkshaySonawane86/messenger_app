@@ -422,39 +422,22 @@ export default function ChatPage() {
     {/* Rahul code */}
 <div
       className="chat-container"
-      style={{
-        display: "flex",
-        height: "100vh",
-        backgroundColor: "#f4fdfa",
-        fontFamily: "Arial, sans-serif",
-      }}
+      
     >
 {/* Sidebar */}
       <div
         className="sidebar"
-        style={{
-          width: "30%",
-          backgroundColor: "#fff",
-          borderRight: "1px solid #e0e0e0",
-          display: "flex",
-          flexDirection: "column",
-        }}
       >
 
         <div
-          style={{
-            padding: "15px",
-            borderBottom: "1px solid #e0e0e0",
-            fontWeight: "bold",
-            fontSize: "20px",
-            color: "#2ac48a",
-          }}
+        className="quickChart"
+          
         >
           QuickChat
         </div>
         
 
-        <div style={{ flex: 1, overflowY: "auto" }}>
+        <div className="chart">
             {contacts.map((chat) => (
           <div
               key={chat}
@@ -466,28 +449,14 @@ export default function ChatPage() {
                       // ensureChatExist('selectedChat')
                       ensureChatExists();
                    }}
+
+                   className="chartData"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "12px 16px",
-                cursor: "pointer",
-                backgroundColor: receiverIdentifier === chat._id ? "#e6f9f0" : "transparent",
-                transition: "0.2s",
+                backgroundColor: receiverIdentifier === chat._id ? "#e6f9f0" : "transparent"
               }}
             >
               <div
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  backgroundColor: "#baf3db",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  color: "#fff",
-                }}
+              className="chartImgdiv"
               >
                 {/* {chat.avatarUrl} */}
                 <img
@@ -498,7 +467,7 @@ export default function ChatPage() {
                 className="chat-avatar"
               />
               </div>
-               <div style={{ fontSize: "16px", color: "#222" }}>{chat.name || chat.email}</div>
+               <div className="chartImgName">{chat.name || chat.email}</div>
 
             </div>
             ))}
@@ -508,18 +477,13 @@ export default function ChatPage() {
         {/* Chat Area */}
       <div
         className="chat-area"
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          border: '2px solid #000'
-        }}
       >
     
        {receiverIdentifier ? (
       <>
        {/* Chat Header */}
             <div
+            
               style={{
                 padding: "15px 20px",
                 borderBottom: "1px solid #e0e0e0",
@@ -530,18 +494,7 @@ export default function ChatPage() {
               }}
             >
               <div
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  backgroundColor: "#baf3db",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                  color: "#fff",
-                  // border: '2px solid #000'
-                }}
+              className="chat-header-img"
               >
               {/* {contacts._id === receiverIdentifier} */}
               
@@ -555,7 +508,7 @@ export default function ChatPage() {
                 className="chat-avatar"
               />
               </div>
-              <h2 style={{ margin: 0, fontSize: "18px", color: "#2ac48a" }}>
+              <h2 className="chat-header-name">
                 {/* {selectedChat} */}
                 {/* {receiverIdentifier} */}
                 {/* {contacts.map(user => user._id === receiverIdentifier) ? contacts.email : 'No name'} */}
@@ -566,24 +519,23 @@ export default function ChatPage() {
 
             {/* Messages */}
             <div
-              style={{
-                flex: 1,
-                padding: "15px",
-                overflowY: "auto",
-                backgroundColor: "#f4fdfa",
-                display: "flex",
-                flexDirection: "column",
-              }}
+            className="messages-rahul"
             >
 
               {/* {messages.map((m) => (
             <MessageItem key={m._id} m={m} currentUserId={user._id} />
           ))} */}
 
-          
+{/*           
+          {messages.map((m) => (
+            <MessageItem key={m._id} m={m} currentUserId={user._id} />
+          ))} */}
+
+          <div className="chat-messages">
           {messages.map((m) => (
             <MessageItem key={m._id} m={m} currentUserId={user._id} />
           ))}
+        </div>
         
 
        </div>
