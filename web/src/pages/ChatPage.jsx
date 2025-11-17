@@ -11,6 +11,8 @@ import api from "../services/api";
 import { createSocket, disconnectSocket, getSocket } from "../services/socket";
 import useAuthStore from "../store/useAuthStore";
 import "./ChatPage.css";
+import dots from '../img/dots.png';
+import DotsPage from './dotsPage';
 
 dayjs.extend(relativeTime);
 
@@ -290,6 +292,7 @@ export default function ChatPage() {
   // console.log('selectchart',{selectedChat});
 
   const [selectedChat,setSelectedChat]=useState([]);
+  const [dotsImgClick,setDotsImgClick]=useState(false);
   // console.log(selectedChat);
 
   // async function ensureChatExist(id) {
@@ -434,7 +437,9 @@ export default function ChatPage() {
           
         >
           QuickChat
+          <img className="dotsImg" src={dots} alt="Three decorative dots" onClick={()=>setDotsImgClick(!dotsImgClick)} />
         </div>
+       {dotsImgClick && <DotsPage />} 
         
 
         <div className="chart">
@@ -459,13 +464,21 @@ export default function ChatPage() {
               className="chartImgdiv"
               >
                 {/* {chat.avatarUrl} */}
-                <img
+                {/* <img
                 src={
                   chat.avatarUrl ||
                   `https://ui-avatars.com/api/?name=${encodeURIComponent(chat.name || chat.email)}&background=baf3db&color=fff`
                 }
                 className="chat-avatar"
-              />
+              /> */}
+              <img
+            src={
+              chat?.avatarUrl ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(chat?.name || chat?.email)}&background=baf3db&color=fff`
+            }
+            className="user-avatar"
+            alt="User"
+          />
               </div>
                <div className="chartImgName">{chat.name || chat.email}</div>
 
@@ -500,13 +513,21 @@ export default function ChatPage() {
               
                 {/* {receiverIdentifier[0]} */}
                 {/* {selectedChat[0]} */}
-                <img
+                {/* <img
                 src={
                   selectedChat.avatarUrl ||
                   `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedChat.name || selectedChat.email)}&background=baf3db&color=fff`
                 }
                 className="chat-avatar"
-              />
+              /> */}
+              <img
+            src={
+              selectedChat?.avatarUrl ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedChat?.name || selectedChat?.email)}&background=baf3db&color=fff`
+            }
+            className="user-avatar"
+            alt="User"
+          />
               </div>
               <h2 className="chat-header-name">
                 {/* {selectedChat} */}
@@ -545,7 +566,7 @@ export default function ChatPage() {
           <footer className="chat-footer">
             {isTyping && (
               <div className="typing-indicator-footer">
-                :speech_balloon: {selectedContact?.name} is typing...
+                💬 {selectedContact?.name} is typing...
               </div>
             )}
             {/* Preview Section */}
@@ -556,7 +577,7 @@ export default function ChatPage() {
                 ) : filePreview ? (
                   <div className="preview-file">{filePreview}</div>
                 ) : (
-                  <div className="preview-file">:round_pushpin: Location Ready to Send</div>
+                  <div className="preview-file">📍 Location Ready to Send</div>
                 )}
                 <button
                   className="remove-preview"
@@ -591,7 +612,8 @@ export default function ChatPage() {
     <EmojiPicker
       onEmojiClick={(emojiData) => {
         setInput((prev) => prev + emojiData.emoji);
-        setShowEmojiPicker(false); // auto-close after select
+        
+        // setShowEmojiPicker(false); // auto-close after select
       }}
       autoFocusSearch={false}
     />
@@ -612,15 +634,32 @@ export default function ChatPage() {
                   📎
                 </button>
                 {showAttachmentMenu && (
-                  <div className="attachment-menu">
-                    <label>📸 <input type="file" accept="image/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Image</label>
-                    <label>🎥 <input type="file" accept="video/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Video</label>
-                    <label>🎵 <input type="file" accept="audio/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Audio</label>
-                    <label>📄 <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.txt" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Document</label>
-                    <label onClick={handleShareLocation}>📍 Send Location</label>
-                    <label onClick={handleLiveShare}>🌐 {liveSharing ? "Stop Live" : "Live Location"}</label>
-                  </div>
-                )}
+                <div className="attachment-menu">
+                  <label>
+                    📷 Image
+                    <input type="file" accept="image/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />
+                  </label>
+
+                  <label>
+                    🎥 Video
+                    <input type="file" accept="video/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />
+                  </label>
+
+                  <label>
+                    🎵 Audio
+                    <input type="file" accept="audio/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />
+                  </label>
+
+                  <label>
+                    📄 Document
+                    <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.txt" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />
+                  </label>
+
+                  <label onClick={handleShareLocation}>📍 Send Location</label>
+
+                  <label onClick={handleLiveShare}>🌐 {liveSharing ? "Stop Live" : "Live Location"}</label>
+                </div>
+              )}
               </div>
               <button type="submit" disabled={!socketInitialized}>➤</button>
             </form>

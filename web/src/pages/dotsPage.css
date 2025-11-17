@@ -1,0 +1,35 @@
+
+.dotsDiv
+{
+    position: absolute;
+    width: 200px;
+    height: 180px;
+    /* border: 2px solid #000; */
+    z-index: 999;
+    top: 55px;
+    left: 430px;
+    background-color: #baf3db;
+    border-radius: 5px;
+    padding: 10px;
+    padding-top: 20px;
+}
+
+.dotsDiv div{
+    width: 100%;
+    /* border: 2px solid #000; */
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: larger;
+    margin-top: 5px;
+    background-color: #2ac48a;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dotsDiv div:hover{
+    background-color: #87debc;
+    color: #000;
+}
