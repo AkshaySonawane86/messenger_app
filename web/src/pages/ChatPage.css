@@ -215,10 +215,11 @@
 .send-form {
   display: flex;
   gap: 8px;
-  max-width: 720px;
+  max-width: 1000px;
   margin: 0 auto;
   width: 100%;
   position: relative;
+  /* border: 2px solid #000; */
 }
 
 .send-form input {
@@ -379,7 +380,7 @@
 }
 
 /* ✅ Emoji button */
-.emoji-btn {
+/* .emoji-btn {
   background: #f1f5f9;
   border-radius: 50%;
   width: 36px;
@@ -394,22 +395,22 @@
 }
 .emoji-btn:hover {
   background: #e2e8f0;
-}
+} */
 
 /* ✅ Emoji picker container (aligned & shadowed) */
-.emoji-picker-container {
+/* .emoji-picker-container {
   position: absolute;
   bottom: 60px;
   left: 50px;
   z-index: 300;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   border-radius: 12px;
-}
+} */
 
 /* ✅ Attachment Menu (re-aligned like WhatsApp) */
-.attach-wrapper {
+/* .attach-wrapper {
   position: relative;
-}
+} */
 .attachment-menu {
   position: absolute;
   bottom: 55px;
@@ -470,7 +471,7 @@
   color: #1e3a8a;
 }
 .location-card a {
-  color: #2563eb;
+  color: #2ac48a;
   text-decoration: none;
   font-weight: 500;
 }
@@ -481,7 +482,7 @@
 .emoji-wrapper {
   position: relative;
 }
-
+/* 
 .emoji-picker-container {
   position: absolute;
   bottom: 55px;
@@ -491,7 +492,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   animation: fadeIn 0.2s ease;
-}
+} */
 
 /* harshal */
  .chat-container
@@ -667,7 +668,7 @@
   transition: 0.2s ease;
 }
 .send-form input:focus {
-  border-color: #2563eb;
+  border-color: #2ac48a;
   background: #fff;
 }
 /* Buttons */

@@ -540,53 +540,92 @@ export default function ChatPage() {
 
        </div>
 
-          {chatId && (
-        <footer className="chat-footer">
-          {isTyping && <div className="typing-indicator-footer">💬 {selectedContact?.name} is typing...</div>}
-
-          {/* ✅ Preview Section */}
-          {(filePreview || locationPreview) && (
-            <div className="preview-container">
-              {filePreview && file?.type.startsWith("image") ? (
-                <img src={filePreview} alt="preview" className="preview-image" />
-              ) : filePreview ? (
-                <div className="preview-file">{filePreview}</div>
-              ) : (
-                <div className="preview-file">📍 Location Ready to Send</div>
-              )}
-              <button className="remove-preview" onClick={() => { setFile(null); setFilePreview(null); setLocationPreview(null); }}>✕</button>
-            </div>
-          )}
-
-          <form onSubmit={sendMessage} className="send-form">
-            <button type="button" className="emoji-btn" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-              😀
-            </button>
-            {showEmojiPicker && (
-              <div className="emoji-picker-container" ref={pickerRef}>
-                <EmojiPicker onEmojiClick={(e) => setInput((prev) => prev + e.emoji)} autoFocusSearch={false} />
+         {/* Footer */}
+        {chatId && (
+          <footer className="chat-footer">
+            {isTyping && (
+              <div className="typing-indicator-footer">
+                :speech_balloon: {selectedContact?.name} is typing...
               </div>
             )}
-            <input placeholder="Type a message..." value={input} onChange={handleTyping} />
-            <div className="attach-wrapper">
-              <button type="button" className="file-upload-btn" onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}>
-                📎
-              </button>
-              {showAttachmentMenu && (
-                <div className="attachment-menu">
-                  <label>📷<input type="file" accept="image/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label>🎥<input type="file" accept="video/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label>🎵<input type="file" accept="audio/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label>📄<input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.txt" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label onClick={handleShareLocation}>📍 Send Location</label>
-                  <label onClick={handleLiveShare}>🌐 {liveSharing ? "Stop Live" : "Live Location"}</label>
-                </div>
-              )}
-            </div>
-            <button type="submit" disabled={!socketInitialized}>➤</button>
-          </form>
-        </footer>
-      )}
+            {/* Preview Section */}
+            {(filePreview || locationPreview) && (
+              <div className="preview-container">
+                {filePreview && file?.type.startsWith("image") ? (
+                  <img src={filePreview} alt="preview" className="preview-image" />
+                ) : filePreview ? (
+                  <div className="preview-file">{filePreview}</div>
+                ) : (
+                  <div className="preview-file">:round_pushpin: Location Ready to Send</div>
+                )}
+                <button
+                  className="remove-preview"
+                  onClick={() => {
+                    setFile(null);
+                    setFilePreview(null);
+                    setLocationPreview(null);
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+            {/* Message Input Form */}
+            <form className="send-form" onSubmit={sendMessage}>
+<button
+  type="button"
+  className="emoji-btn"
+  onClick={(e) => {
+    e.stopPropagation();
+    setShowEmojiPicker(!showEmojiPicker);
+  }}
+>
+  😄
+</button>
+{showEmojiPicker && (
+  <div
+    className="emoji-picker-container"
+    ref={pickerRef}
+    onClick={(e) => e.stopPropagation()} // Prevent auto-close
+  >
+    <EmojiPicker
+      onEmojiClick={(emojiData) => {
+        setInput((prev) => prev + emojiData.emoji);
+        setShowEmojiPicker(false); // auto-close after select
+      }}
+      autoFocusSearch={false}
+    />
+  </div>
+)}
+              <input
+                placeholder="Type a message..."
+                value={input}
+                onChange={handleTyping}
+              />
+              {/* Attachment Menu */}
+              <div className="attach-wrapper">
+                <button
+                  type="button"
+                  className="file-upload-btn"
+                  onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}
+                >
+                  📎
+                </button>
+                {showAttachmentMenu && (
+                  <div className="attachment-menu">
+                    <label>📸 <input type="file" accept="image/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Image</label>
+                    <label>🎥 <input type="file" accept="video/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Video</label>
+                    <label>🎵 <input type="file" accept="audio/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Audio</label>
+                    <label>📄 <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.txt" hidden onChange={(e) => handleFileSelect(e.target.files[0])} />Document</label>
+                    <label onClick={handleShareLocation}>📍 Send Location</label>
+                    <label onClick={handleLiveShare}>🌐 {liveSharing ? "Stop Live" : "Live Location"}</label>
+                  </div>
+                )}
+              </div>
+              <button type="submit" disabled={!socketInitialized}>➤</button>
+            </form>
+          </footer>
+        )}
 
             
       </>
