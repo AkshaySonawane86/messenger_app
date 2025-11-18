@@ -43,13 +43,22 @@
 .profileImg{
     align-self: center;
     margin-top: 20px;
-}
-
-.profileAvatar{
     width: 150px;
     height: 150px;
     border-radius: 50%;
     border: 5px solid #2ac48a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileAvatar{
+    width: 140px;
+    height: 140px;
+  border-radius: 50%;  
+  display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .Name{
