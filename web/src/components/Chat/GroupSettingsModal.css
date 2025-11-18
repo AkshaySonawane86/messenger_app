@@ -1,0 +1,376 @@
+/* ✅ Enhanced WhatsApp-style GroupSettingsModal.css */
+/* Clean, modern and aligned with ChatPage aesthetic */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.65); /* semi-dark overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* -------------------- Card Layout -------------------- */
+.modal-card {
+  background: var(--modal-bg, #ffffff);
+  color: var(--modal-text, #111827);
+  width: 420px;
+  max-width: 95%;
+  padding: 28px 24px 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+  animation: slideUp 0.25s ease-out;
+}
+
+.modal-card h3 {
+  margin-bottom: 18px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* -------------------- Group Avatar -------------------- */
+.group-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.group-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2563eb25;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.group-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.35);
+}
+
+.change-avatar-btn {
+  font-size: 14px;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+
+.change-avatar-btn:hover {
+  color: #1d4ed8;
+}
+
+/* -------------------- Input Fields -------------------- */
+.modal-card input[type="text"],
+.description-section textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  outline: none;
+  resize: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-card input[type="text"]:focus,
+.description-section textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* -------------------- Description -------------------- */
+.description-section {
+  margin: 10px 0 20px;
+  text-align: left;
+}
+
+.description-section textarea {
+  height: 70px;
+  background: #f9fafb;
+}
+
+.description-section button {
+  margin-top: 6px;
+}
+
+/* -------------------- Buttons -------------------- */
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.25s;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.25s;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+/* -------------------- Member List -------------------- */
+.member-list {
+  list-style: none;
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.member-item {
+  background: #f3f4f6;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  transition: background 0.25s ease;
+}
+
+.member-item:hover {
+  background: #e5e7eb;
+}
+
+.member-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.admin-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* -------------------- Remove Button -------------------- */
+.remove-btn {
+  background: transparent;
+  border: none;
+  color: #dc2626;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.remove-btn:hover {
+  color: #b91c1c;
+  transform: scale(1.1);
+}
+
+/* -------------------- Add Member Section -------------------- */
+.add-member-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 24px;
+}
+
+.add-member-section select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.add-member-section select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* -------------------- Close Button -------------------- */
+.btn-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.btn-close:hover {
+  color: #111827;
+  transform: rotate(90deg);
+}
+
+/* -------------------- Scrollbar -------------------- */
+.member-list::-webkit-scrollbar {
+  width: 6px;
+}
+.member-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.member-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* -------------------- Animations -------------------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(25px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* -------------------- Dark Mode -------------------- */
+@media (prefers-color-scheme: dark) {
+  .modal-card {
+    background: #1e293b;
+    color: #f8fafc;
+  }
+
+  .modal-card input[type="text"],
+  .add-member-section select,
+  .description-section textarea {
+    background: #334155;
+    border-color: #475569;
+    color: #f8fafc;
+  }
+
+  .member-item {
+    background: #334155;
+  }
+
+  .member-item:hover {
+    background: #3b4459;
+  }
+
+  .remove-btn {
+    color: #f87171;
+  }
+
+  .remove-btn:hover {
+    color: #ef4444;
+  }
+
+  .btn-close:hover {
+    color: #f8fafc;
+  }
+
+  .group-avatar {
+    border-color: #2563eb55;
+  }
+
+  .change-avatar-btn {
+    color: #60a5fa;
+  }
+}
+/* Added scroll, emoji styling, and improved layout */
+
+.scrollable-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Smooth scrollbar for modal */
+.scrollable-modal::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollable-modal::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.scrollable-modal::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Emoji section */
+.input-with-emoji,
+.textarea-with-emoji {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.emoji-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 8px;
+  color: #2563eb;
+  transition: transform 0.2s ease;
+}
+
+.emoji-btn:hover {
+  transform: scale(1.1);
+}
+
+.emoji-picker {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 6000;
+  transform: scale(0.95);
+}
+
+/* Keep rest of existing styling intact (no change below this line) */

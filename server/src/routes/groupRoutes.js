@@ -1,24 +1,37 @@
+
+
 // server/src/routes/groupRoutes.js
 import express from "express";
 import {
-    addToGroup,
-    createGroup,
-    removeFromGroup,
-    renameGroup,
+  addToGroup,
+  createGroup,
+  getGroupInfo,
+  leaveGroup,
+  removeFromGroup,
+  renameGroup,
+  updateGroupAvatar, // ✅ NEW
 } from "../controllers/groupController.js";
+import authMiddleware from "../middleware/auth.js";
+import upload from "../middleware/upload.js"; // ✅ for image upload
 
 const router = express.Router();
 
-// POST /api/groups/create
-router.post("/create", createGroup);
+// ✅ Core group APIs
+router.post("/create", authMiddleware, createGroup);
+router.put("/rename", authMiddleware, renameGroup);
+router.put("/add", authMiddleware, addToGroup);
+router.put("/remove", authMiddleware, removeFromGroup);
 
-// PUT /api/groups/rename
-router.put("/rename", renameGroup);
+// ✅ New APIs
+router.get("/:id", authMiddleware, getGroupInfo);
+router.delete("/leave", authMiddleware, leaveGroup);
 
-// PUT /api/groups/add
-router.put("/add", addToGroup);
-
-// PUT /api/groups/remove
-router.put("/remove", removeFromGroup);
+// ✅ Upload / Update group avatar (admin only)
+router.put(
+  "/avatar/:id",
+  authMiddleware,
+  upload.single("avatar"),
+  updateGroupAvatar
+);
 
 export default router;
