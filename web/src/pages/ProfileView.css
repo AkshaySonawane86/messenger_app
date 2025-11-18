@@ -1,0 +1,58 @@
+
+.profileDiv{
+    height: 500px;
+    width: 600px;
+    border: 2px solid #000;
+    position: absolute;
+    z-index: 999;
+    top: 70px;
+    left: 480px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profileDiv .crossImg{
+    padding: 5px;
+    color: #000;
+    /* border: 2px solid #000; */
+    
+    /* justify-content: end;
+    justify-self: end; */
+    align-self: end;
+    cursor: pointer;
+    border-radius: 50%;
+    margin: 5px 5px 0 0;
+}
+
+.crossImg:hover{
+    background-color: #d5d4d4;
+}
+
+/* .crossImg .xClose{
+    height: 32px;
+    width: 32px;
+} */
+
+.profileName{
+  align-self: center;
+  /* border: 2px solid #000; */
+  font-size: larger;
+  font-weight: 500;
+}
+
+.profileImg{
+    align-self: center;
+    margin-top: 20px;
+}
+
+.profileAvatar{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid #2ac48a;
+}
+
+.Name{
+    align-self: center;
+    margin-top: 10px;
+}

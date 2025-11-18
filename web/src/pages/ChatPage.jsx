@@ -13,6 +13,7 @@ import useAuthStore from "../store/useAuthStore";
 import "./ChatPage.css";
 import dots from '../img/dots.png';
 import DotsPage from './dotsPage';
+import ProfileView from "./ProfileView";
 
 dayjs.extend(relativeTime);
 
@@ -293,6 +294,7 @@ export default function ChatPage() {
 
   const [selectedChat,setSelectedChat]=useState([]);
   const [dotsImgClick,setDotsImgClick]=useState(false);
+  const [profileView,setProfileView]=useState(false);
   // console.log(selectedChat);
 
   // async function ensureChatExist(id) {
@@ -480,8 +482,7 @@ export default function ChatPage() {
             alt="User"
           />
               </div>
-               <div className="chartImgName">{chat.name || chat.email}</div>
-
+               <div className="chartImgName" >{chat.name || chat.email}</div>
             </div>
             ))}
         </div>
@@ -529,12 +530,13 @@ export default function ChatPage() {
             alt="User"
           />
               </div>
-              <h2 className="chat-header-name">
+              <h2 className="chat-header-name" onClick={()=>setProfileView(!profileView)}>
                 {/* {selectedChat} */}
                 {/* {receiverIdentifier} */}
                 {/* {contacts.map(user => user._id === receiverIdentifier) ? contacts.email : 'No name'} */}
                 {selectedChat.name || selectedChat.email}
               </h2>
+              {profileView && <ProfileView selectedChat={selectedChat} onClose={() => setProfileView(false)} />}
             </div>
 
 

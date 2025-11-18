@@ -525,9 +525,16 @@
 
 .dotsImg
 {
-  width: 24px;
-  height: 24px;
+  width: 35px;
+  height: 35px;
   cursor: pointer;
+  border-radius: 50%;
+  /* border: 2px solid #000; */
+  padding: 5px;
+}
+
+.dotsImg:hover{
+  background-color: #d5d4d4;
 }
 
 .chart
@@ -556,11 +563,13 @@
                   justify-content: center;
                   font-weight: bold;
                   color: #fff;
+                
 }
 
 .chartImgName{
   font-size: 16px;
    color: #222;
+   /* cursor: pointer; */
 }
 
 .chat-area{
@@ -598,6 +607,7 @@
    margin: 0;
     font-size: 18px;
      color: #2ac48a;
+     cursor: pointer;
      
 }
 
