@@ -7,6 +7,7 @@ import http from "http";
 import path from "path";
 import app from "./app.js";
 import connectDB from "./config/db.js";
+import groupRoutes from "./routes/groupRoutes.js"; // ✅ Added
 import { initSocket } from "./sockets/index.js";
 
 dotenv.config();
@@ -27,7 +28,6 @@ const PORT = process.env.PORT || 4000;
     app.use("/uploads", express.static(uploadsBase));
 
     // ✅ Ensure separate folders exist for avatars & chat
-    
     const avatarDir = path.join(uploadsBase, "avatars");
     const chatDir = path.join(uploadsBase, "chat");
     if (!fs.existsSync(avatarDir)) fs.mkdirSync(avatarDir, { recursive: true });
@@ -36,6 +36,11 @@ const PORT = process.env.PORT || 4000;
     // ✅ Explicitly serve subfolders (extra reliability on some hosts)
     app.use("/uploads/avatars", express.static(avatarDir));
     app.use("/uploads/chat", express.static(chatDir));
+
+    /* -------------------------------------------------------------------------- */
+    /* ✅ Register New Group Routes                                               */
+    /* -------------------------------------------------------------------------- */
+    app.use("/api/groups", groupRoutes); // ✅ Added
 
     /* -------------------------------------------------------------------------- */
     /* ✅ Initialize Socket.io + Start Server                                     */

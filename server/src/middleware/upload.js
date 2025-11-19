@@ -15,9 +15,11 @@ const chatDir = path.join(baseDir, "chat");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dest = req.originalUrl.includes("upload-avatar")
-      ? avatarDir
-      : chatDir;
+    const url = req.originalUrl || "";
+    const dest =
+      url.includes("upload-avatar") || url.includes("groups/avatar")
+        ? avatarDir
+        : chatDir;
     cb(null, dest);
   },
   filename: (req, file, cb) => {

@@ -6,6 +6,7 @@ import fs from "fs";
 import mongoose from "mongoose";
 import multer from "multer";
 import path from "path";
+import { getMyChats } from "../controllers/chatController.js";
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
@@ -33,8 +34,13 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   const allowed = [
     "image/jpeg",
+    "image/jpg",
     "image/png",
     "image/webp",
+    "image/gif",
+    "image/bmp",
+    "image/svg+xml",
+    "image/avif",
     "application/pdf",
     "text/plain",
     "video/mp4",
@@ -47,7 +53,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 15 * 1024 * 1024 }, // 15 MB limit
+  limits: { fileSize: 15 * 1024 * 1024 }, // 15 MB
 });
 
 /* -------------------------------------------------------------------------- */
@@ -55,32 +61,15 @@ const upload = multer({
 /* -------------------------------------------------------------------------- */
 router.get("/", async (req, res) => {
   try {
-    const userId = req.query.userId || "672f7cc1f82b15f001";
+    const userId = req.query.userId;
+    if (!userId)
+      return res.status(400).json({ ok: false, error: "missing_userId" });
+
     const chats = await Chat.find({ participants: userId })
       .populate("lastMessage")
       .lean();
 
-    if (!chats.length) {
-      return res.json({
-        ok: true,
-        chats: [
-          {
-            _id: "testChat1",
-            name: "John Doe",
-            lastMessage: { content: "Hey there!" },
-            updatedAt: new Date(),
-          },
-          {
-            _id: "testChat2",
-            name: "Sarah",
-            lastMessage: { content: "Let's meet tomorrow!" },
-            updatedAt: new Date(),
-          },
-        ],
-      });
-    }
-
-    res.json({ ok: true, chats });
+    return res.json({ ok: true, chats });
   } catch (err) {
     console.error("❌ Error loading chats:", err);
     res.status(500).json({ ok: false, error: "server_error" });
@@ -93,29 +82,10 @@ router.get("/", async (req, res) => {
 router.get("/:chatId/messages", async (req, res) => {
   try {
     const { chatId } = req.params;
-    const limit = parseInt(req.query.limit || 50, 10);
+    const limit = parseInt(req.query.limit || 200, 10);
 
     if (!mongoose.Types.ObjectId.isValid(chatId)) {
-      console.warn(`⚠️ Using mock data for chatId: ${chatId}`);
-      return res.json({
-        ok: true,
-        messages: [
-          {
-            _id: "mock1",
-            chatId,
-            senderId: "user1",
-            content: "Hey there 👋",
-            createdAt: new Date(Date.now() - 60000),
-          },
-          {
-            _id: "mock2",
-            chatId,
-            senderId: "user2",
-            content: "Hello! How are you?",
-            createdAt: new Date(),
-          },
-        ],
-      });
+      return res.json({ ok: true, messages: [] });
     }
 
     const messages = await Message.find({ chatId })
@@ -123,7 +93,7 @@ router.get("/:chatId/messages", async (req, res) => {
       .limit(limit)
       .lean();
 
-    res.json({ ok: true, messages });
+    return res.json({ ok: true, messages });
   } catch (err) {
     console.error("❌ Error loading messages:", err);
     res.status(500).json({ ok: false, error: "server_error" });
@@ -131,23 +101,25 @@ router.get("/:chatId/messages", async (req, res) => {
 });
 
 /* -------------------------------------------------------------------------- */
-/* ✅ POST /api/chats/create                                                  */
+/* ✅ POST /api/chats/create  (private chat)                                   */
 /* -------------------------------------------------------------------------- */
 router.post("/create", async (req, res) => {
   try {
     const { userA, userB } = req.body;
+
     if (!userA || !userB)
       return res.status(400).json({ ok: false, error: "missing_participants" });
 
-    // prevent self-chat
     if (String(userA) === String(userB)) {
       return res
         .status(400)
         .json({ ok: false, error: "cannot_chat_with_self" });
     }
 
+    // resolve identifier → ObjectId
     const resolveUserId = async (identifier) => {
       if (mongoose.Types.ObjectId.isValid(identifier)) return identifier;
+
       const user = await User.findOne({
         email: identifier.trim().toLowerCase(),
       });
@@ -162,23 +134,26 @@ router.post("/create", async (req, res) => {
         .status(404)
         .json({ ok: false, error: "user_not_found_or_invalid" });
 
-    let chat = await Chat.findOne({
+    // Check if chat exists
+    let existing = await Chat.findOne({
       isGroup: false,
       participants: { $all: [aId, bId], $size: 2 },
     }).lean();
 
-    if (chat) return res.json({ ok: true, chat });
+    if (existing) return res.json({ ok: true, chat: existing });
 
+    // Create new chat
     const created = await Chat.create({
       isGroup: false,
       participants: [aId, bId],
       createdBy: aId,
     });
 
-    chat = await Chat.findById(created._id).populate("lastMessage").lean();
+    const chat = await Chat.findById(created._id)
+      .populate("lastMessage")
+      .lean();
 
-    console.log(`💬 New chat created between ${aId} & ${bId}`);
-    res.json({ ok: true, chat });
+    return res.json({ ok: true, chat });
   } catch (err) {
     console.error("❌ Error creating chat:", err);
     res.status(500).json({ ok: false, error: "server_error" });
@@ -186,15 +161,17 @@ router.post("/create", async (req, res) => {
 });
 
 /* -------------------------------------------------------------------------- */
-/* ✅ POST /api/chats/upload (media/file upload for chat messages)            */
+/* ✅ POST /api/chats/upload                                                   */
 /* -------------------------------------------------------------------------- */
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     if (!req.file)
       return res.status(400).json({ ok: false, error: "no_file_uploaded" });
 
+    // URL must match what socket server returns
     const fileUrl = `/uploads/chat/${req.file.filename}`;
-    const fileType = req.file.mimetype.startsWith("image")
+
+    const type = req.file.mimetype.startsWith("image")
       ? "image"
       : req.file.mimetype.startsWith("video")
       ? "video"
@@ -204,7 +181,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     const file = {
       url: fileUrl,
-      type: fileType,
+      type,
       name: req.file.originalname,
     };
 
@@ -216,5 +193,10 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     res.status(500).json({ ok: false, error: "server_error" });
   }
 });
+
+/* -------------------------------------------------------------------------- */
+/* 🧩 GET /api/chats/my                                                       */
+/* -------------------------------------------------------------------------- */
+router.get("/my", getMyChats);
 
 export default router;

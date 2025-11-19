@@ -14,10 +14,13 @@ import "./ChatPage.css";
 import dots from '../img/dots.png';
 import DotsPage from './dotsPage';
 import ProfileView from "./ProfileView";
+import LeftSidePage from "./LeftSidePage";
+// import MessageItem from "../components/MessageItem";
 
 dayjs.extend(relativeTime);
 
-function MessageItem({ m, currentUserId }) {
+/* ---------------- MESSAGE ITEM ---------------- */
+function MessageItem({ m, currentUserId, isGroup }) {
   const isMine = String(m.senderId) === String(currentUserId);
 
   const renderAttachment = () => {
@@ -52,7 +55,13 @@ function MessageItem({ m, currentUserId }) {
         </audio>
       );
     return (
-      <a href={a.url} download={a.name} target="_blank" rel="noopener noreferrer" className="file-link">
+      <a
+        href={a.url}
+        download={a.name}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="file-link"
+      >
         📎 {a.name}
       </a>
     );
@@ -61,13 +70,17 @@ function MessageItem({ m, currentUserId }) {
   const renderStatus = () => {
     if (!isMine) return null;
     if (m.status === "read") return <span className="tick tick-read">✓✓</span>;
-    if (m.status === "delivered") return <span className="tick tick-delivered">✓✓</span>;
+    if (m.status === "delivered")
+      return <span className="tick tick-delivered">✓✓</span>;
     if (m.status === "sent") return <span className="tick tick-sent">✓</span>;
     return null;
   };
 
   return (
     <div className={`message ${isMine ? "mine" : "other"}`}>
+      {isGroup && !isMine && (
+        <div className="group-sender-name">👤 {m.senderName || "Member"}</div>
+      )}
       <div className="message-body">{renderAttachment()}</div>
       <div className="message-meta">
         {dayjs(m.createdAt).format("HH:mm")} {renderStatus()}
@@ -101,6 +114,8 @@ export default function ChatPage() {
   const pickerRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
+   const selectedContact = contacts.find((c) => String(c._id) === String(receiverIdentifier));
+
   /* -------------------- Load contacts -------------------- */
   useEffect(() => {
     (async () => {
@@ -111,7 +126,7 @@ export default function ChatPage() {
     })();
   }, [user?._id]);
 
-  const selectedContact = contacts.find((c) => String(c._id) === String(receiverIdentifier));
+ 
 
   /* -------------------- Outside click for emoji picker -------------------- */
   useEffect(() => {
@@ -363,13 +378,13 @@ export default function ChatPage() {
         </div>
       )}
 
-      <main className="chat-main" ref={chatMainRef}>
+      {/* <main className="chat-main" ref={chatMainRef}>
         <div className="messages">
           {messages.map((m) => (
-            <MessageItem key={m._id} m={m} currentUserId={user._id} />
+            <MessageItem key={m._id} m={m} currentUserId={user._id} isGroup={selectedContact?.isGroup} />
           ))}
         </div>
-      </main>
+      </main> */}
 
       {chatId && (
         <footer className="chat-footer">
@@ -441,51 +456,17 @@ export default function ChatPage() {
           QuickChat
           <img className="dotsImg" src={dots} alt="Three decorative dots" onClick={()=>setDotsImgClick(!dotsImgClick)} />
         </div>
-       {dotsImgClick && <DotsPage />} 
+       {dotsImgClick && <DotsPage receiverIdentifier={receiverIdentifier} selectedChat={selectedChat} />} 
         
 
-        <div className="chart">
-            {contacts.map((chat) => (
-          <div
-              key={chat}
-              onClick={() => {
-                      setSelectedChat(chat);
-                      setReceiverIdentifier(chat._id);
-                      // console.log("This is selectChart",selectedChat);
-                      // console.log("after the click the reciverId",receiverIdentifier);
-                      // ensureChatExist('selectedChat')
-                      ensureChatExists();
-                   }}
+        <LeftSidePage
+           contacts={contacts}
+           setSelectedChat={setSelectedChat}
+           setReceiverIdentifier={setReceiverIdentifier}
+           receiverIdentifier={receiverIdentifier}
+           ensureChatExists={ensureChatExists}
+        />
 
-                   className="chartData"
-              style={{
-                backgroundColor: receiverIdentifier === chat._id ? "#e6f9f0" : "transparent"
-              }}
-            >
-              <div
-              className="chartImgdiv"
-              >
-                {/* {chat.avatarUrl} */}
-                {/* <img
-                src={
-                  chat.avatarUrl ||
-                  `https://ui-avatars.com/api/?name=${encodeURIComponent(chat.name || chat.email)}&background=baf3db&color=fff`
-                }
-                className="chat-avatar"
-              /> */}
-              <img
-            src={
-              chat?.avatarUrl ||
-              `https://ui-avatars.com/api/?name=${encodeURIComponent(chat?.name || chat?.email)}&background=baf3db&color=fff`
-            }
-            className="user-avatar"
-            alt="User"
-          />
-              </div>
-               <div className="chartImgName" >{chat.name || chat.email}</div>
-            </div>
-            ))}
-        </div>
         </div>
 
         {/* Chat Area */}
@@ -556,7 +537,7 @@ export default function ChatPage() {
 
           <div className="chat-messages">
           {messages.map((m) => (
-            <MessageItem key={m._id} m={m} currentUserId={user._id} />
+            <MessageItem key={m._id} m={m} currentUserId={user._id} isGroup={selectedContact?.isGroup} />
           ))}
         </div>
         
