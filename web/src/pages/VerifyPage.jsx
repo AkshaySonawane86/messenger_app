@@ -1,7 +1,5 @@
 
-
  // src/pages/VerifyPage.jsx
-
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
