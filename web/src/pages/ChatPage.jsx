@@ -108,7 +108,7 @@ export default function ChatPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [liveSharing, setLiveSharing] = useState(false);
   const [watchId, setWatchId] = useState(null);
-  const [showProfilePopup, setShowProfilePopup] = useState(false);
+  // const [showProfilePopup, setShowProfilePopup] = useState(false);
 
   const chatMainRef = useRef(null);
   const pickerRef = useRef(null);
@@ -116,7 +116,6 @@ export default function ChatPage() {
 
    const selectedContact = contacts.find((c) => String(c._id) === String(receiverIdentifier));
 
-  /* -------------------- Load contacts -------------------- */
   /* -------------------- Load Contacts + Groups -------------------- */
   useEffect(() => {
     (async () => {
@@ -400,6 +399,8 @@ export default function ChatPage() {
 
 
   // Akshay
+
+
   // console.log('This is reciverIdentifier',receiverIdentifier);
   // console.log('THis is user id',contacts[0]);
   
@@ -409,134 +410,9 @@ export default function ChatPage() {
   const [selectedChat,setSelectedChat]=useState([]);
   const [dotsImgClick,setDotsImgClick]=useState(false);
   const [profileView,setProfileView]=useState(false);
-  // console.log(selectedChat);
-
-  // async function ensureChatExist(id) {
-  //   if (!user?._id || !receiverIdentifier) return;
-  //   const res = await api.post("/api/chats/create", { userA: user._id, userB: id });
-  //   if (res.data?.chat?._id) {
-  //     const cid = res.data.chat._id;
-  //     setChatId(cid);
-  //     localStorage.setItem("lastChatId", cid);
-  //     localStorage.setItem("lastReceiverId", receiverIdentifier);
-  //     getSocket()?.emit("chat:join", { chatId: cid });
-  //     return cid;
-  //   }
-  // }
-
-  
 
   return (
     <>
-    <div className="chat-page" style={{display: "none"}}>
-      <header className="chat-header" style={{border: '10px solid #000'}}>
-        <div className="chat-contact">
-          {selectedContact ? (
-            <>
-              <img
-                src={
-                  selectedContact.avatarUrl ||
-                  `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedContact.name || selectedContact.email)}&background=2563eb&color=fff`
-                }
-                className="chat-avatar"
-              />
-              <span className="contact-name-clickable" onClick={() => setShowProfilePopup(true)}>
-                {selectedContact.name || selectedContact.email}
-              </span>
-              <span className={`status-dot ${selectedContact.online ? "status-online" : "status-offline"}`} />
-            </>
-          ) : (
-            <h3>Start a Chat</h3>
-          )}
-        </div>
-
-        <div className="user-info" onClick={() => navigate("/profile-settings")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}>
-          <img
-            src={
-              user?.avatarUrl ||
-              `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || user?.email)}&background=2563eb&color=fff`
-            }
-            className="user-avatar"
-          />
-          <span>{user?.name || user?.email}</span>
-        </div>
-      </header>
-
-      {!chatId && (
-        <div className="receiver-input">
-          <label>Select a user:</label>
-          <select value={receiverIdentifier} onChange={(e) => setReceiverIdentifier(e.target.value)}>
-            <option value="">-- Choose --</option>
-            {contacts.map((c) => (
-              <option key={c._id} value={c._id}>
-                {c.name || c.email}
-              </option>
-            ))}
-          </select>
-          <button onClick={ensureChatExists}>Start Chat</button>
-        </div>
-      )}
-
-      {/* <main className="chat-main" ref={chatMainRef}>
-        <div className="messages">
-          {messages.map((m) => (
-            <MessageItem key={m._id} m={m} currentUserId={user._id} isGroup={selectedContact?.isGroup} />
-          ))}
-        </div>
-      </main> */}
-
-      {chatId && (
-        <footer className="chat-footer">
-          {isTyping && <div className="typing-indicator-footer">💬 {selectedContact?.name} is typing...</div>}
-
-          {/* ✅ Preview Section */}
-          {(filePreview || locationPreview) && (
-            <div className="preview-container">
-              {filePreview && file?.type.startsWith("image") ? (
-                <img src={filePreview} alt="preview" className="preview-image" />
-              ) : filePreview ? (
-                <div className="preview-file">{filePreview}</div>
-              ) : (
-                <div className="preview-file">📍 Location Ready to Send</div>
-              )}
-              <button className="remove-preview" onClick={() => { setFile(null); setFilePreview(null); setLocationPreview(null); }}>✕</button>
-            </div>
-          )}
-
-          <form onSubmit={sendMessage} className="send-form">
-            <button type="button" className="emoji-btn" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-              😀
-            </button>
-            {showEmojiPicker && (
-              <div className="emoji-picker-container" ref={pickerRef}>
-                <EmojiPicker onEmojiClick={(e) => setInput((prev) => prev + e.emoji)} autoFocusSearch={false} />
-              </div>
-            )}
-            <input placeholder="Type a message..." value={input} onChange={handleTyping} />
-            <div className="attach-wrapper">
-              <button type="button" className="file-upload-btn" onClick={() => setShowAttachmentMenu(!showAttachmentMenu)}>
-                📎
-              </button>
-              {showAttachmentMenu && (
-                <div className="attachment-menu">
-                  <label>📷<input type="file" accept="image/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label>🎥<input type="file" accept="video/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label>🎵<input type="file" accept="audio/*" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label>📄<input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.txt" hidden onChange={(e) => handleFileSelect(e.target.files[0])} /></label>
-                  <label onClick={handleShareLocation}>📍 Send Location</label>
-                  <label onClick={handleLiveShare}>🌐 {liveSharing ? "Stop Live" : "Live Location"}</label>
-                </div>
-              )}
-            </div>
-            <button type="submit" disabled={!socketInitialized}>➤</button>
-          </form>
-        </footer>
-      )}
-
-      {showProfilePopup && selectedContact && (
-        <ProfilePopup contact={selectedContact} onClose={() => setShowProfilePopup(false)} />
-      )}
-    </div>
 
     {/* Rahul code */}
 <div
@@ -590,17 +466,6 @@ export default function ChatPage() {
               <div
               className="chat-header-img"
               >
-              {/* {contacts._id === receiverIdentifier} */}
-              
-                {/* {receiverIdentifier[0]} */}
-                {/* {selectedChat[0]} */}
-                {/* <img
-                src={
-                  selectedChat.avatarUrl ||
-                  `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedChat.name || selectedChat.email)}&background=baf3db&color=fff`
-                }
-                className="chat-avatar"
-              /> */}
               <img
             src={
               selectedChat?.avatarUrl ||
@@ -611,9 +476,6 @@ export default function ChatPage() {
           />
               </div>
               <h2 className="chat-header-name" onClick={()=>setProfileView(!profileView)}>
-                {/* {selectedChat} */}
-                {/* {receiverIdentifier} */}
-                {/* {contacts.map(user => user._id === receiverIdentifier) ? contacts.email : 'No name'} */}
                 {selectedChat.name || selectedChat.email}
               </h2>
               {profileView && <ProfileView selectedChat={selectedChat} onClose={() => setProfileView(false)} />}
@@ -624,23 +486,11 @@ export default function ChatPage() {
             <div
             className="messages-rahul"
             >
-
-              {/* {messages.map((m) => (
-            <MessageItem key={m._id} m={m} currentUserId={user._id} />
-          ))} */}
-
-{/*           
-          {messages.map((m) => (
-            <MessageItem key={m._id} m={m} currentUserId={user._id} />
-          ))} */}
-
           <div className="chat-messages">
           {messages.map((m) => (
             <MessageItem key={m._id} m={m} currentUserId={user._id} isGroup={selectedContact?.isGroup} />
           ))}
         </div>
-        
-
        </div>
 
          {/* Footer */}
