@@ -65,7 +65,13 @@ function LeftSidePage({
                   onClick={() =>{
                  setSelectedChat(g);
                  setReceiverIdentifier(g._id);
+                 ensureChatExists();
                 }}
+                className="chartData"
+            style={{
+              backgroundColor:
+                receiverIdentifier === g._id ? "#e6f9f0" : "transparent",
+            }}
                 >
                  <div className="chartImgdiv">
                   <img src={g.avatarUrl} className="user-avatar"  alt="" />

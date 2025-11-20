@@ -117,18 +117,57 @@ export default function ChatPage() {
    const selectedContact = contacts.find((c) => String(c._id) === String(receiverIdentifier));
 
   /* -------------------- Load contacts -------------------- */
+  /* -------------------- Load Contacts + Groups -------------------- */
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get(`/api/auth/users?excludeId=${user?._id || ""}`);
-        if (res.data?.ok) setContacts(res.data.users);
-      } catch {}
+        const [usersRes, chatsRes] = await Promise.all([
+          api.get(`/api/auth/users?excludeId=${user?._id || ""}`),
+          api.get(`/api/chats/my?userId=${user?._id}`),
+        ]);
+
+        const users = usersRes.data?.users || [];
+        const groups = chatsRes.data?.chats?.filter((c) => c.isGroup) || [];
+
+        const combined = [
+          ...groups.map((g) => ({
+            _id: g._id,
+            name: g.groupName || "Unnamed Group",
+            isGroup: true,
+            avatarUrl:
+              g.groupAvatar && g.groupAvatar.startsWith("http")
+                ? g.groupAvatar
+                : g.groupAvatar
+                ? `${api.defaults.baseURL}${g.groupAvatar}`
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    g.groupName || "Group"
+                  )}&background=2563eb&color=fff`,
+            unreadCount: 0,
+            online: false,
+          })),
+          ...users.map((u) => ({
+            ...u,
+            isGroup: false,
+            avatarUrl:
+              u.avatarUrl ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                u.name || u.email
+              )}&background=2563eb&color=fff`,
+            unreadCount: 0,
+            online: !!u.online,
+          })),
+        ];
+
+        setContacts(combined);
+      } catch (err) {
+        console.error("❌ Failed to load contacts/groups:", err);
+      }
     })();
   }, [user?._id]);
 
  
 
-  /* -------------------- Outside click for emoji picker -------------------- */
+  /* -------------------- Emoji Picker Outside Click -------------------- */
   useEffect(() => {
     function handleClickOutside(e) {
       if (pickerRef.current && !pickerRef.current.contains(e.target)) {
@@ -191,7 +230,7 @@ export default function ChatPage() {
     if (c) c.scrollTo({ top: c.scrollHeight, behavior: smooth ? "smooth" : "auto" });
   };
 
-  /* -------------------- File handling -------------------- */
+ /* -------------------- File Handling -------------------- */
   const handleFileSelect = (file) => {
     if (!file) return;
     setFile(file);
@@ -201,9 +240,10 @@ export default function ChatPage() {
     setShowAttachmentMenu(false);
   };
 
-  /* -------------------- Location handling -------------------- */
+  /* -------------------- Location Handling -------------------- */
   const handleShareLocation = () => {
     if (!navigator.geolocation) return alert("Location not supported");
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
@@ -211,6 +251,7 @@ export default function ChatPage() {
       },
       () => alert("Unable to get location")
     );
+
     setShowAttachmentMenu(false);
   };
 
@@ -228,7 +269,6 @@ export default function ChatPage() {
           content: { lat, lng },
           contentType: "location",
           attachments: [],
-          recipients: [receiverIdentifier],
         };
         getSocket()?.emit("message:send", payload);
       });
@@ -239,52 +279,111 @@ export default function ChatPage() {
     setShowAttachmentMenu(false);
   };
 
-  /* -------------------- Send message -------------------- */
+  /* -------------------- Send Message -------------------- */
   const sendMessage = async (e) => {
     e?.preventDefault();
+
     if (!input.trim() && !file && !locationPreview) return;
-    const activeChat = chatId || (await ensureChatExists());
-    if (!activeChat) return;
+
+    // make sure socket exists
+    const s = getSocket();
+    if (!s) return;
+
+    // Determine active chat (create if needed)
+    let activeChat = chatId;
+    if (!activeChat) {
+      // if receiverIdentifier is present, create/find chat
+      const possible = await ensureChatExists(receiverIdentifier);
+      if (!possible) return alert("Unable to find or create chat.");
+      activeChat = possible;
+    }
 
     let uploadedFile = null;
     if (file) {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("chatId", activeChat);
-      const res = await api.post("/api/chats/upload", fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      if (res.data?.ok) uploadedFile = res.data.file;
+      try {
+        const res = await api.post("/api/chats/upload", fd, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        if (res.data?.ok) uploadedFile = res.data.file;
+      } catch (err) {
+        console.error("❌ upload error:", err);
+      }
     }
+
+    const selected = contacts.find((c) => String(c._id) === String(receiverIdentifier));
+    const isGroup = selected?.isGroup;
 
     const payload = {
       chatId: activeChat,
       content: locationPreview || input.trim(),
-      contentType: locationPreview
-        ? "location"
-        : file
-        ? file.type.startsWith("image")
-          ? "image"
-          : file.type.startsWith("video")
-          ? "video"
-          : file.type.startsWith("audio")
-          ? "audio"
-          : "file"
-        : "text",
+      contentType:
+        locationPreview
+          ? "location"
+          : file
+          ? file.type.startsWith("image")
+            ? "image"
+            : file.type.startsWith("video")
+            ? "video"
+            : file.type.startsWith("audio")
+            ? "audio"
+            : "file"
+          : "text",
       attachments: uploadedFile ? [uploadedFile] : [],
-      recipients: [receiverIdentifier],
     };
 
-    setMessages((m) => [
-      ...m,
-      { ...payload, _id: `temp-${Date.now()}`, senderId: user._id, createdAt: new Date() },
-    ]);
+    // Add temporary message for optimistic UI
+    const tempId = `temp-${Date.now()}`;
+    const tempMessage = {
+      ...payload,
+      _id: tempId,
+      senderId: user._id,
+      senderName: user.name,
+      createdAt: new Date().toISOString(),
+      status: "sent",
+    };
+
+    setMessages((m) => [...m, tempMessage]);
     setInput("");
     setFile(null);
     setFilePreview(null);
     setLocationPreview(null);
     scrollToBottom();
-    getSocket()?.emit("message:send", payload);
+
+    // emit with ack so server can return real id/status
+    if (isGroup) {
+      s.emit("message:send", payload, (ack) => {
+        if (ack?.ok && ack.messageId) {
+          // replace temp id with real id & update status
+          setMessages((prev) =>
+            prev.map((mm) =>
+              mm._id === tempId ? { ...mm, _id: ack.messageId, status: "delivered" } : mm
+            )
+          );
+        } else {
+          setMessages((prev) =>
+            prev.map((mm) => (mm._id === tempId ? { ...mm, status: "sent" } : mm))
+          );
+        }
+      });
+    } else {
+      // private: include recipients
+      s.emit("message:send", { ...payload, recipients: [receiverIdentifier] }, (ack) => {
+        if (ack?.ok && ack.messageId) {
+          setMessages((prev) =>
+            prev.map((mm) =>
+              mm._id === tempId ? { ...mm, _id: ack.messageId, status: "delivered" } : mm
+            )
+          );
+        } else {
+          setMessages((prev) =>
+            prev.map((mm) => (mm._id === tempId ? { ...mm, status: "sent" } : mm))
+          );
+        }
+      });
+    }
   };
 
   /* -------------------- Typing -------------------- */
@@ -296,7 +395,7 @@ export default function ChatPage() {
     clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
       s.emit("typing:stop", { chatId, receiverId: receiverIdentifier });
-    }, 2000);
+    }, 1500);
   };
 
 
