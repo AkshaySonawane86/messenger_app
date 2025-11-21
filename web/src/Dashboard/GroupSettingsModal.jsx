@@ -2,8 +2,8 @@
 
 import EmojiPicker from "emoji-picker-react";
 import { useEffect, useRef, useState } from "react";
-import api from "../../services/api";
-import useAuthStore from "../../store/useAuthStore";
+import api from "../services/api";
+import useAuthStore from "../store/useAuthStore";
 import "./GroupSettingsModal.css";
 
 export default function GroupSettingsModal({ groupId, onClose }) {

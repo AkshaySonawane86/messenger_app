@@ -6,7 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import EmojiPicker from "emoji-picker-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ProfilePopup from "../components/ProfilePopup";
+// import ProfilePopup from "../components/ProfilePopup";
 import api from "../services/api";
 import { createSocket, disconnectSocket, getSocket } from "../services/socket";
 import useAuthStore from "../store/useAuthStore";
@@ -16,6 +16,7 @@ import DotsPage from './dotsPage';
 import ProfileView from "./ProfileView";
 import LeftSidePage from "./LeftSidePage";
 // import MessageItem from "../components/MessageItem";
+import GroupSettingsModal from '../Dashboard/GroupSettingsModal';
 
 dayjs.extend(relativeTime);
 
@@ -410,6 +411,7 @@ export default function ChatPage() {
   const [selectedChat,setSelectedChat]=useState([]);
   const [dotsImgClick,setDotsImgClick]=useState(false);
   const [profileView,setProfileView]=useState(false);
+  const [showGroupSettings, setShowGroupSettings] = useState(false);
 
   return (
     <>
@@ -475,10 +477,24 @@ export default function ChatPage() {
             alt="User"
           />
               </div>
-              <h2 className="chat-header-name" onClick={()=>setProfileView(!profileView)}>
+            <h2 className="chat-header-name" onClick={()=>{
+              const isGroup=selectedChat.isGroup;
+
+              isGroup ? setShowGroupSettings(true) :
+              setProfileView(!profileView)}}>
                 {selectedChat.name || selectedChat.email}
               </h2>
               {profileView && <ProfileView selectedChat={selectedChat} onClose={() => setProfileView(false)} />}
+              
+              {showGroupSettings && selectedContact?.isGroup && (
+        <GroupSettingsModal
+          groupId={selectedContact._id}
+          onClose={() => {
+            setShowGroupSettings(false);
+            setTimeout(() => window.location.reload(), 300);
+          }}
+        />
+      )}
             </div>
 
 
