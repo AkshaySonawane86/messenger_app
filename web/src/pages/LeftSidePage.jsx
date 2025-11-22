@@ -39,18 +39,19 @@ function LeftSidePage({
     <>
       <div className="chart">
         {/* SEARCH */}
-          <div className="dropdown-search-box" style={{ padding: 8 }}>
+          <div className="dropdown-search-box" style={{ padding: 8,height: '55px',position: 'fixed',width: '29%',background: '#fff'}}>
             <input
               type="text"
               placeholder="🔍 Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
-                width: "100%",
+                width: "28%",
                 padding: "8px 10px",
                 borderRadius: 8,
                 border: "1px solid #e6e9ef",
                 outline: "none",
+                position: "fixed"
               }}
             />
           </div>
